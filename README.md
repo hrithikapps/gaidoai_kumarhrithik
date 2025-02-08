@@ -1,3 +1,17 @@
+## Different Screen with Data Persitence & State management using ContextAPI
+
+![Screenshot 2025-02-08 112719](https://github.com/user-attachments/assets/26c5e821-ec57-46bb-bb0c-dc6af12046ad)
+
+![Screenshot 2025-02-08 112803](https://github.com/user-attachments/assets/3a5defc1-356a-4ce9-8999-67fb7a7f57b2)
+
+![Screenshot 2025-02-08 112826](https://github.com/user-attachments/assets/bc4c49b2-16dc-4f75-8259-9a03bd2971fe)
+
+![Screenshot 2025-02-08 112840](https://github.com/user-attachments/assets/ed976714-7609-4448-b600-e4a4bd6e6db5)
+
+![Screenshot 2025-02-08 112851](https://github.com/user-attachments/assets/4ad6767b-4491-40c8-b5d8-97de87664abe)
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
 ## Getting Started
