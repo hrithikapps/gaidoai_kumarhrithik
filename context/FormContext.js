@@ -1,14 +1,12 @@
 import { createContext, useState, useContext, useEffect } from "react";
 
-// Create FormContext
 export const FormContext = createContext();
 
 export const useFormContext = () => useContext(FormContext);
 
-// Provider Component
 export const FormProvider = ({ children }) => {
   const [formData, setFormData] = useState({
-    step: 1, // Track current step
+    step: 1, 
     gender: "",
     familyMembers: [
       { name: "Self", age: "" },
@@ -21,7 +19,6 @@ export const FormProvider = ({ children }) => {
     additionalDetails: "",
   });
 
-  // Load data from local storage when component mounts
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedData = localStorage.getItem("formData");
@@ -29,9 +26,8 @@ export const FormProvider = ({ children }) => {
         setFormData(JSON.parse(storedData));
       }
     }
-  }, []); // Runs only once when the component mounts
+  }, []); 
 
-  // Save form data to local storage whenever it changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("formData", JSON.stringify(formData));
@@ -45,4 +41,3 @@ export const FormProvider = ({ children }) => {
   );
 };
 
-// Custom Hook to Use Form Context
