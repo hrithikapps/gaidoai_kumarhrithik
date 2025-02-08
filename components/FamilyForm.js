@@ -1,36 +1,49 @@
 import { useState } from "react";
 import { useFormContext } from "../context/FormContext";
-import { IoMdPerson } from "react-icons/io"; // Example icon
+import { IoMdPerson } from "react-icons/io"; 
 
 const FamilyForm = ({ onNext }) => {
   const { formData, setFormData } = useFormContext();
   const [selectedGender, setSelectedGender] = useState(formData.gender);
-  const [selectedMembers, setSelectedMembers] = useState([]); // Store selected members for border change
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [genderError, setGenderError] = useState(false);
+  const [memberError, setMemberError] = useState(false);
+
+  const staticFamilyMembers = [
+    "Self",
+    "Wife",
+    "Son",
+    "Daughter",
+    "Father",
+    "Mother",
+  ];
 
   const handleGenderSelect = (gender) => {
     setSelectedGender(gender);
     setFormData((prev) => ({ ...prev, gender }));
+    setGenderError(false); 
   };
 
-  // Toggle selection by adding/removing from selectedMembers array (only affects UI)
   const handleToggleMember = (memberName) => {
-    setSelectedMembers(
-      (prevSelected) =>
-        prevSelected.includes(memberName)
-          ? prevSelected.filter((name) => name !== memberName) // Remove selection
-          : [...prevSelected, memberName] // Add selection
+    setSelectedMembers((prevSelected) =>
+      prevSelected.includes(memberName)
+        ? prevSelected.filter((name) => name !== memberName)
+        : [...prevSelected, memberName]
     );
+
+    if (staticFamilyMembers.includes(memberName)) {
+      setMemberError(false);
+    }
   };
 
-  // Handle adding new members from dropdown (Allows Duplicates)
-  const handleAddMember = (e) => {
-    const newMember = e.target.value;
-    if (newMember) {
-      setFormData((prev) => ({
-        ...prev,
-        familyMembers: [...prev.familyMembers, { name: newMember, age: "" }],
-      }));
-      e.target.value = ""; // Reset dropdown after selection
+  const handleContinue = () => {
+    if (!selectedGender) setGenderError(true);
+    if (
+      !selectedMembers.some((member) => staticFamilyMembers.includes(member))
+    ) {
+      setMemberError(true);
+    } else {
+      onNext();
     }
   };
 
@@ -40,33 +53,40 @@ const FamilyForm = ({ onNext }) => {
         Find the best plan for your family
       </h2>
 
-      {/* Gender Selection */}
-      <div className="flex justify-center gap-4 mb-6">
-        <button
-          className={`px-6 py-2 rounded-md ${
-            selectedGender === "Male" ? "bg-black text-white" : "bg-gray-300"
-          }`}
-          onClick={() => handleGenderSelect("Male")}
-        >
-          Male
-        </button>
-        <button
-          className={`px-6 py-2 rounded-md ${
-            selectedGender === "Female" ? "bg-black text-white" : "bg-gray-300"
-          }`}
-          onClick={() => handleGenderSelect("Female")}
-        >
-          Female
-        </button>
+      <div className="flex flex-col items-center gap-2 mb-2">
+        <div className="flex gap-4">
+          <button
+            className={`px-6 py-2 rounded-md ${
+              selectedGender === "Male" ? "bg-black text-white" : "bg-gray-200"
+            }`}
+            onClick={() => handleGenderSelect("Male")}
+          >
+            Male
+          </button>
+          <button
+            className={`px-6 py-2 rounded-md ${
+              selectedGender === "Female"
+                ? "bg-black text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleGenderSelect("Female")}
+          >
+            Female
+          </button>
+        </div>
+        {genderError && (
+          <p className="text-red-500 text-xs">Please select gender</p>
+        )}
       </div>
 
-      {/* Family Members Selection (Now Fully Dynamic) */}
       <h3 className="text-lg font-semibold mb-4 text-left">
         Select family members you want to insure
       </h3>
-      <div className="flex flex-wrap mb-4">
+      <div className="flex flex-wrap mb-2">
         {formData.familyMembers.map((member, index) => {
-          const isSelected = selectedMembers.includes(member.name); // Check if selected
+          const isStaticMember = staticFamilyMembers.includes(member.name);
+          const isSelected = selectedMembers.includes(member.name);
+
           return (
             <div
               key={index}
@@ -75,7 +95,6 @@ const FamilyForm = ({ onNext }) => {
                 isSelected ? "border-black" : "border-gray-300"
               }`}
             >
-              {/* Icon remains as per your original request */}
               <span className="size-[38px] bg-gray-100 rounded-full overflow-hidden flex justify-center items-center">
                 <IoMdPerson className="text-2xl text-gray-500" />
               </span>
@@ -84,10 +103,25 @@ const FamilyForm = ({ onNext }) => {
           );
         })}
       </div>
+      {memberError && (
+        <p className="text-red-500 text-xs text-center">
+          Please add a family member
+        </p>
+      )}
 
-      {/* Dropdown to Add More Members (Allows Duplicates) */}
       <div className="text-center text-xs mb-4 font-semibold border-collapse">
-        <select onChange={handleAddMember} className="border p-2 rounded-md">
+        <select
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              familyMembers: [
+                ...prev.familyMembers,
+                { name: e.target.value, age: "" },
+              ],
+            }))
+          }
+          className="border p-2 rounded-md"
+        >
           <option value="">Add More Members</option>
           <option value="Brother">Brother</option>
           <option value="Sister">Sister</option>
@@ -96,10 +130,9 @@ const FamilyForm = ({ onNext }) => {
         </select>
       </div>
 
-      {/* Continue Button */}
       <div className="mt-6 text-center">
         <button
-          onClick={onNext}
+          onClick={handleContinue}
           className="bg-black text-white px-6 py-2 rounded-md w-full"
         >
           Continue

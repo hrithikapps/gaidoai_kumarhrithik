@@ -16,7 +16,6 @@ const MultiStepForm = () => {
     setFormData((prev) => ({ ...prev, step: prev.step - 1 }));
   };
 
-  // Step Mapping to Components
   const stepComponents = {
     1: <FamilyForm onNext={handleNext} />,
     2: <SelectAge onNext={handleNext} onBack={handleBack} />,
